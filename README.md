@@ -1,4 +1,4 @@
-# Development_Fans Cryptocurrency Wallet Service Design
+# Cryptocurrency Wallet Service Design
 
 
 
