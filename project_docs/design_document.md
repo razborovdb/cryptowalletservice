@@ -1,5 +1,7 @@
 # Cryptocurrency Wallet Service Design
 
+## Description
+
 This service provides: 
 
 * Creating, retrieving, and updating cryptocurrency wallets 

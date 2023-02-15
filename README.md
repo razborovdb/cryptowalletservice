@@ -1,8 +1,13 @@
 # Cryptocurrency Wallet Service Design
 
 ## Description
+This service provides:
 
-This service provides: Creating, retrieving, and updating cryptocurrency wallets Retrieving all customer wallets in the list This project uses authorization to validate users. This project uses Cassandra as Database, Spring Boot as Server and RESET controller, Node JS and React as frontend.
+* Creating, retrieving, and updating cryptocurrency wallets
+* Retrieving all customer wallets in the list This project uses authorization to validate users.
+
+This project uses Cassandra as Database, Spring Boot as Server and RESET controller, Node JS and React as frontend.
+
 
 ## 1. Problem Statement
 
