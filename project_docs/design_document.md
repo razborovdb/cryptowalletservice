@@ -5,7 +5,9 @@
 This service provides: 
 
 * Creating, retrieving, and updating cryptocurrency wallets 
-* Retrieving all customer wallets in the list This project uses authorization to validate users. 
+* Retrieving all customer wallets in the list 
+
+This project uses authorization to validate users. 
 
 This project uses Cassandra as Database, Spring Boot and REST controllers as Server side, Node JS and React as frontend.
 
