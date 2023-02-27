@@ -153,14 +153,14 @@ Double paymentDate;
 ----------------------------------------------------
 ## 6.2. RegisterUser Endpoint
 
-* Accepts `POST` requests to `/user/register`
+* Accepts `POST` requests to `/api/user/register`
 * Accepts a User with all parameters and returns token.
   * If the given email in User is found, will return an error.
   * If user created, return token.
 
 ## 6.3. LoginUser Endpoint
 
-* Accepts `POST` requests to `/user/login`
+* Accepts `POST` requests to `/api/user/login`
 * Accepts a User with email and returns token.
   * If the User with given email is not found, will return an error.
   * If User is found, return token.

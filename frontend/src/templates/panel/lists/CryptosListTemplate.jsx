@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { DataGrid } from '@mui/x-data-grid';
 import {useDispatch, useSelector} from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import EditCryptoTemplate from "../EditCryptoTemplate";
 import { getAllCryptos, cryptosDelete } from "../../slices/CryptoCurrenciesSlice";
 
@@ -94,7 +93,7 @@ export default function CryptosListTemplate() {
             }
             )
         );
-        toast("Deleted");
+
     }
 
     return (
