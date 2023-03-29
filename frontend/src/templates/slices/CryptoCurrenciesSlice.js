@@ -37,6 +37,34 @@ export const getAllCryptos = createAsyncThunk(
     }
 );
 
+export const updateAllCryptos = createAsyncThunk(
+  "cryptos/updateAllCryptos",
+  async (values, { rejectWithValue }) => {
+
+    console.log("here");
+    
+    try {
+
+      const cryptosList = await axios.post(`${url}/cryptos`,
+        {
+
+        } ,    
+        {
+
+          headers: setHeaders(values.token)
+        }
+      );
+
+
+      return cryptosList?.data;
+    } catch (err) {
+      console.log("----------------------error----------------");
+      console.log(err);
+      return rejectWithValue(err.response.data);
+    }
+  }
+);
+
 export const cryptosDelete = createAsyncThunk(
     
     "cryptos/cryptosDelete",
@@ -152,6 +180,31 @@ const cryptosSlice = createSlice({
                 status: "rejected",
                 error: action.payload,
             }
+        });
+        builder.addCase(updateAllCryptos.pending, (state, action) => {
+
+          return { ...state, status: "pending" };
+        });
+        builder.addCase(updateAllCryptos.fulfilled, (state, action) => {
+          toast.success("Cryptos updated", {
+            position: "bottom-left",
+          });
+    
+          return {
+            ...state,
+            cryptos: action.payload,
+            status: "success"
+          };
+    
+        });
+        builder.addCase(updateAllCryptos.rejected, (state, action) => {
+    
+    
+          return {
+            ...state,
+            status: "rejected",
+            error: action.payload,
+          }
         });
         builder.addCase(cryptosDelete.pending, (state, action) =>  {
             return {...state, deleteStatus: "pending"};

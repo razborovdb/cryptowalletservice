@@ -8,6 +8,8 @@ import com.rdbprojects.cryptowallet.entities.CryptoCurrencies;
 import com.rdbprojects.cryptowallet.entities.Users;
 import com.rdbprojects.cryptowallet.utils.CloudinaryImages;
 import com.rdbprojects.cryptowallet.utils.JsonWebToken;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -15,8 +17,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.cloudinary.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,6 +37,9 @@ public class CryptoCurrenciesControler {
 
     @Autowired
     JsonWebToken jsonWebToken;
+
+    @Value("${CRYPTO_ACCESS_KEY}")
+    private String cryptoAccessKey;
 
     @Autowired
     CloudinaryImages cloudinaryImages;
@@ -57,6 +64,53 @@ public class CryptoCurrenciesControler {
         }
 
         List<CryptoCurrencies> cryptos = cryptoCurrenciesDao.findAll();
+        return ResponseEntity.ok(cryptos);
+    }
+
+    @PostMapping("/cryptos")
+    public ResponseEntity<List<CryptoCurrencies>> updateCryptos(@RequestHeader(value="${json.token}") String token) {
+        // check token
+        Users user = jsonWebToken.getUserInformationFromToken(token);
+        if(user == null) {
+            return ResponseEntity.status(400).eTag("Bad token ...").body(null);
+        }
+        try {
+            user = usersDao.findUserByEmail(user);
+            if (user == null) {
+                return ResponseEntity.status(400).eTag("Bad token ...").body(null);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(400).eTag("Bad token ...").body(null);
+        }
+
+        //
+        String uri = "http://api.coinlayer.com/live?access_key=" + cryptoAccessKey;
+        RestTemplate restTemplate = new RestTemplate();
+        String cryptoValue = restTemplate.getForObject(uri, String.class);
+
+        int i = cryptoValue.indexOf("rates");
+        if (i > 0) {
+            cryptoValue = cryptoValue.substring(i+8, cryptoValue.length() - 2);
+        }
+        String[] cryptoList = cryptoValue.split(",");
+        Map<String, Double> cryptoMap = new HashMap<>();
+
+        for (String s: cryptoList) {
+            String[] spl = s.split(":");
+            cryptoMap.put(spl[0].replaceAll("\"",""), Double.parseDouble(spl[1]));
+        }
+
+        List<CryptoCurrencies> cryptos = cryptoCurrenciesDao.findAll();
+
+        for (CryptoCurrencies crypto : cryptos) {
+            if (cryptoMap.containsKey(crypto.getCryptoName())) {
+                crypto.setCryptoCost(cryptoMap.get(crypto.getCryptoName()));
+                cryptoCurrenciesDao.updateCrypto(crypto);
+            }
+        }
+
+        cryptos = cryptoCurrenciesDao.findAll();
+
         return ResponseEntity.ok(cryptos);
     }
 
